@@ -4,6 +4,17 @@ Nadhif Bhagawanta Hadiprayitno (05111942000029)<br>
 
 # ANSWER
 # Problem A,B,C
+(A) Tugas pertama kalian yaitu membuat topologi jaringan sesuai dengan rancangan yang diberikan Luffy dibawah ini:
+    Keterangan : 	Doriki adalah DNS Server
+		            Jipangu adalah DHCP Server
+		            Maingate dan Jorge adalah Web Server
+		            Jumlah Host pada Blueno adalah 100 host
+		            Jumlah Host pada Cipher adalah 700 host
+		            Jumlah Host pada Elena adalah 300 host
+		            Jumlah Host pada Fukurou adalah 200 host
+(B) Karena kalian telah belajar subnetting dan routing, Luffy ingin meminta kalian untuk membuat topologi tersebut menggunakan teknik CIDR atau VLSM. 
+    setelah melakukan subnetting,
+(C) Kalian juga diharuskan melakukan Routing agar setiap perangkat pada jaringan tersebut dapat terhubung.
 First We need to make topology and do subnetting and routing<br>
 Here we're using CIDR<br>
 ![Topology 1](https://user-images.githubusercontent.com/81411468/145398487-d9500632-c9de-4790-8f31-81d74e483a35.PNG)
@@ -14,7 +25,7 @@ Here we're using CIDR<br>
 After that we can make the ip distribution looks like this based on our IP Tree<br>
 ![Pohon IP](https://user-images.githubusercontent.com/81411468/145398755-3d284992-4602-4fe8-8451-fb89e8601c47.PNG)
 ![Pembagian IP](https://user-images.githubusercontent.com/81411468/145398698-733973a1-3854-4389-9828-92c807b417fc.PNG)<br>
-![Range](https://user-images.githubusercontent.com/81411468/145409964-05b19921-0960-4310-b7d3-f2168bd39d69.PNG)<br>
+
 For the routing, we can setting our `foosha` so the other router can connect to the internet
 ```
 route add -net 192.210.0.0 netmask 255.255.240.0 gw 192.210.4.2
@@ -22,6 +33,8 @@ route add -net 192.210.16.0 netmask 255.255.248.0 gw 192.210.21.2
 ```
 
 # Problem D
+(D) Tugas berikutnya adalah memberikan ip pada subnet Blueno, Cipher, Fukurou, dan Elena secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus     setting DHCP Relay pada router yang menghubungkannya.  
+
 Next we need to set our client to dynamic ip using dhcp server and the router that connected are the dhcp relay
 ```
 auto eth0
@@ -39,8 +52,7 @@ SERVERS="192.210.8.131"
 INTERFACES="eth0 eth1 eth2 eth3"
 OPTIONS=""
 ```
-We can use this table for our subnet range and broadcast<br>
-![Range](https://user-images.githubusercontent.com/81411468/145409937-cfe1e253-d514-4f08-ab0f-c79b21c79f58.PNG)<br>
+
 Finally we need to set our 4 subnet in `Jipangu` by editing `/etc/dhcp/dhcpd.conf`
 ```
 subnet 192.210.8.0 netmask 255.255.255.128 {
@@ -94,6 +106,7 @@ subnet 192.210.8.128 netmask 255.255.255.248 {
 - No Problem 
 
 # Problem D1
+  Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Foosha menggunakan iptables, tetapi Luffy tidak ingin menggunakan MASQUERADE.
 To make our Topology can access to outside we will using this
 ```
 iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source <ip foosha>
@@ -104,6 +117,7 @@ Because `foosha` using dynamic ip we need to change the ip each time we're re-op
 - Must Change ip foosha everytime re-open the project
 
 # Problem D2
+  Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang merupakan DHCP Server dan     DNS Server demi menjaga keamanan.
 To Make Our DHCP Server and DNS server ( `Jipangu` and `Doriki` ) drop `HTTP` access we're using this in `Water7`
 ```
 iptables -A FORWARD -d 192.210.8.131 -p tcp --dport 80 -j DROP
@@ -120,6 +134,7 @@ iptables -A FORWARD -d 192.210.8.130 -p tcp --dport 80 -j DROP
 - No Problem
 
 # Problem D3
+  Karena kelompok kalian maksimal terdiri dari 3 orang. Luffy meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan     menggunakan iptables, selebihnya didrop.
 We want to Limit our icmp Connection into 3 that going to DHCP and DNS Server, we're using this in `Water7`
 ```
 iptables -A FORWARD -d 192.210.8.130 -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
@@ -133,6 +148,9 @@ iptables -A FORWARD -d 192.210.8.131 -p icmp -m connlimit --connlimit-above 3 --
 - No Problem
 
 # Problem D4
+  Kemudian kalian diminta untuk membatasi akses ke Doriki yang berasal dari subnet Blueno, Cipher, Elena dan Fukuro dengan beraturan sebagai berikut
+  4. Akses dari subnet Blueno dan Cipher hanya diperbolehkan pada pukul 07.00 - 15.00 pada hari Senin sampai Kamis.
+
 We want to make `Blueno` and `Cipher` Can only be used in 07.00-15.00 at Monday to Thursday Only that access `Doriki`<br>
 We need to Set `iptables` in both client using
 ```
@@ -159,6 +177,8 @@ iptables -A OUTPUT -d 192.210.8.130 -j REJECT
 - No Problem
 
 # Problem D5
+  Akses dari subnet Elena dan Fukuro hanya diperbolehkan pada pukul 15.01 hingga pukul 06.59 setiap harinya.
+
 We want to make `Elena` and `Fukurou` can only be used in 15.01-06.59 that access `Doriki`<br>
 We need to Set `iptables` in both client using
 ```
@@ -181,6 +201,11 @@ iptables -A OUTPUT -d 192.210.8.130 -j REJECT
 - No Problem
 
 # Problem D6
+  Selain itu di reject
+  6. Karena kita memiliki 2 Web Server, Luffy ingin Guanhao disetting sehingga setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada        Jorge dan Maingate
+  Luffy berterima kasih pada kalian karena telah membantunya. Luffy juga mengingatkan agar semua aturan iptables harus disimpan pada sistem atau paling tidak kalian menyediakan   script sebagai backup.
+
+
 We want to change the destination if we access `Doriki` it will redirect to `Jorge` and `Maingate` consecutively
 For `Elena` and `Fukurou` we can setting the `iptables` in `Guanhao` using
 ```
