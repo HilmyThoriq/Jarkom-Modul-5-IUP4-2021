@@ -14,7 +14,7 @@ Here we're using CIDR<br>
 After that we can make the ip distribution looks like this based on our IP Tree<br>
 ![Pohon IP](https://user-images.githubusercontent.com/81411468/145398755-3d284992-4602-4fe8-8451-fb89e8601c47.PNG)
 ![Pembagian IP](https://user-images.githubusercontent.com/81411468/145398698-733973a1-3854-4389-9828-92c807b417fc.PNG)<br>
-
+![Range](https://user-images.githubusercontent.com/81411468/145409964-05b19921-0960-4310-b7d3-f2168bd39d69.PNG)
 For the routing, we can setting our `foosha` so the other router can connect to the internet
 ```
 route add -net 192.210.0.0 netmask 255.255.240.0 gw 192.210.4.2
@@ -39,7 +39,8 @@ SERVERS="192.210.8.131"
 INTERFACES="eth0 eth1 eth2 eth3"
 OPTIONS=""
 ```
-
+We can use this table for our subnet range and broadcast<br>
+![Range](https://user-images.githubusercontent.com/81411468/145409937-cfe1e253-d514-4f08-ab0f-c79b21c79f58.PNG)<br>
 Finally we need to set our 4 subnet in `Jipangu` by editing `/etc/dhcp/dhcpd.conf`
 ```
 subnet 192.210.8.0 netmask 255.255.255.128 {
