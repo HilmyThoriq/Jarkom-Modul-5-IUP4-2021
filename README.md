@@ -218,10 +218,16 @@ iptables -t nat -p tcp -A PREROUTING -d 192.210.8.130 -m statistic --mode nth --
 iptables -t nat -p tcp -A PREROUTING -d 192.210.8.130 -j DNAT --to-destination 192.210.18.3:80 
 ```
 
-*Testing*
+*Testing*<br>
+Elena to jorge<br>
+![Elena netcat](https://user-images.githubusercontent.com/81411468/145665566-61507a20-fcd6-4d36-8574-be500a4c64b4.PNG)<br>
+![jorge netcat](https://user-images.githubusercontent.com/81411468/145665586-ff98f71b-c7fa-4a9f-87f5-a3266d89ef7d.PNG)<br>
+
+Blueno to Maingate <br>
+![Blueno netcat](https://user-images.githubusercontent.com/81411468/145665588-a54dc7c3-0cdd-4d45-826c-81a0ae012875.PNG)<br>
+![Maingate netcat](https://user-images.githubusercontent.com/81411468/145665579-dc0f8081-a374-4dce-8149-182851b4a7f6.PNG)<br>
 
 *Difficulties*
 - Can't only setting in `Guanhao` for `Blueno` and `Cipher`
-- Hard to figure out 
-- Don't know how to testing
+- testing with `nc -l -p 80` and `nc 192.210.8.130 80` usually not working but using `tcpdump` it works
 
